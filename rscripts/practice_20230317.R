@@ -1,8 +1,31 @@
 # EDA/시각화 과제(연습문제)
 
+dataset <- read.csv("./data/dataset.csv", header = T)
+dataset2 <- subset(dataset, price >= 2 & price <= 8)
+str(dataset2)
+
+# 데이터셋 툴
+pos <- dataset2$position
+cpos <- 6 - pos
+cpos
+View(dataset2)
+
+# range는 범위를 지정해준다.
+range(dataset2$resident, na.rm = T) # 1 5
 
 
+
+
+# 나만의 답변 작성.
 # 7장 연습문제.
+
+# 1. dataset2$position의 값 이름 변경.
+dataset2$position <- cpos
+dataset2$position[dataset2$position == 1] <- '1급'
+dataset2$position[dataset2$position == 2] <- '2급'
+dataset2$position[dataset2$position == 3] <- '3급'
+dataset2$position[dataset2$position == 4] <- '4급'
+dataset2$position[dataset2$position == 5] <- '5급'
 
 # 2. dataset2의 resident 칼럼을 대상으로 NA 값을 제거한 후 dataset2 변수에 저장하시오.
 
@@ -17,6 +40,9 @@ dataset2$gender2[dataset2$gender == 2] <- "여자"
 # 테이블을 이용한 파이 차트 만들기.
 pie(table(dataset2$gender2))
 
+# Vector(1줄), Matrix(면), Table(제목 있음) - 원천 자료 구조 
+# DF(데이터프레임 - 연산 가능 구조)
+
 # 4. 나이를 30세 이하 -> 1, 31~55 -> 2, 56이상 -> 3 으로 리코딩하여 
 # age3 칼럼에 추가한 후 age, age2, age3 칼럼만 확인하시오. 
 dataset2$age3[dataset2$age <= 30] <- 1
@@ -29,6 +55,7 @@ dataset2[c("age", "age2", "age3")]
 # 8장 연습문제.
 # 01. 다음 조건에 맞게 quakes 데이터 셋의 수심(depth)과 리히터규모(mag)가 동일한 패널에
 # 지진의 발생지를 산점도로 시각화하시오.
+library(lattice)
 
 # 데이터 확인.
 head(quakes)
@@ -36,15 +63,19 @@ head(quakes)
 # 조건1) 수심 3개 영역으로 범주화.
 # 수심(depth)의 범주 확인.
 range(quakes$depth)
-# equal.count(수심, 3개 영역, overlap = 0)를 사용하여 범주화.
+# equal.count(수심, 3개 영역, overlap = 0)를 사용하여 범주화(균등하게 나눠 준다.).
 # number랑 overlap을 생략해도 될까?
-depthgroup <- equal.count(quakes$depth, number = 3, overlap = 0)
+depthgroup <- equal.count(quakes$depth, 
+                          number = 3, 
+                          overlap = 0)
 
 # 조건2) 리히터규모 2개 영역으로 범주화.
 # 리히터규모(mag)의 범주 확인.
 range(quakes$mag)
 # equal.count(리히터규모, 2개 영역, overlap = 0)를 사용하여 범주화.
-magnitudegroup <- equal.count(quakes$mag, number = 2, overlap = 0)
+magnitudegroup <- equal.count(quakes$mag, 
+                              number = 2, 
+                              overlap = 0)
 
 # 조건3) 수심과 리히터규모가 3행 2열 구조의 패널로 산점도 그래프 그리기.
 # xyplot(y축 ~ x축 | 열 * 행, data=데이터, main="제목", ylab="y축이름", xlab="x축이름", 
@@ -57,8 +88,8 @@ xyplot(lat ~ long | magnitudegroup * depthgroup, data = quakes, main = "Fiji Ear
 # 힌트) lattice 패키지의 xyplot() 함수 이용
 # 힌트) 선 그래프 : type="l"
 
-# install.packages("latticeExtra")
-# library(latticeExtra)
+install.packages("latticeExtra")
+library(latticeExtra)
 
 # 데이터 확인.
 head(SeatacWeather)

@@ -391,6 +391,7 @@ inspect(rules[10])
 # 단계 1: 연관단어 시각화를 위해서 자료구조 변경 
 rules <- labels(tranrules, ruleSep = " ")
 
+
 rules
 
 
