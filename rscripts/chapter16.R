@@ -82,12 +82,14 @@ summary(g3)
 idist <- dist(iris[1:4])
 hc <- hclust(idist)
 plot(hc, hang = -1)
+# 군집 수를 자르는 방법 중 하나
+rect.hclust(hc, k=3, border = "red")
 
 # 단계 2: 군집 수 자르기 
 ghc <- cutree(hc, k = 3)
 ghc
 
-# 단계 3: iris 데이터 셋에 ghc 칼러 ㅁ추가 
+# 단계 3: iris 데이터 셋에 ghc 칼럼 추가 
 iris$ghc <- ghc
 table(iris$ghc)
 head(iris)
@@ -106,12 +108,19 @@ summary(g3[1:4])
 # 단계 1: 군집분석에 사용할 변수 추출
 library(ggplot2)
 data(diamonds)
+# 총 표본의 개수(53940개)
+nrow(diamonds)
+# 표본 검정을 위한 데이터 생성 (1000개 추출)
 t <- sample(1:nrow(diamonds), 1000)
+t
 test <- diamonds[t, ]
+# 1000개, 컬럼은 10개
 dim(test)
+# 검정 데이터
 head(test)
-
+# 특정 컬럼만 추출
 mydia <- test[c("price", "carat", "depth", "table")]
+# 4개만 표시
 head(mydia)
 
 
@@ -119,6 +128,7 @@ head(mydia)
 result <- hclust(dist(mydia), method = "average")
 result
 plot(result, hang = -1)
+rect.hclust(result, k=3, border = "red")
 
 
 # 단계 3: 비계층적 군집분석
@@ -163,10 +173,14 @@ tran
 inspect(tran)
 
 # 단계 4: 규칙 발견
+# 지지도가 너무 높아도 문제(규칙이 자명한 것만 나옴),
+# 지지도가 너무 낮아도 문제(별 관련없는 규칙도 나옴).
+# 지지도 = 0.3, 신뢰도 = 0.1
 rule <- apriori(tran, parameter = list(supp = 0.3, conf = 0.1))
 inspect(rule)
 
 # 단계 5: 규칙 발견
+# 지지도 = 0.1, 신뢰도 = 0.1
 rule <- apriori(tran, parameter = list(supp = 0.1, conf = 0.1))
 inspect(rule)
 
@@ -210,6 +224,10 @@ inspect(btran)
 # 실습: Adult 데이터 셋 가져오기 
 data(Adult)
 Adult
+head(Adult)
+# transactions in sparse format with
+# 48842 transactions (rows) and
+# 115 items (columns)
 
 
 # 실습: AdultUCI 데이터 셋 보기 
@@ -218,12 +236,12 @@ str(AdultUCI)
 
 
 # 실습: Adult 데이터 셋의 요약 통계량 보기 
-# 단계 1: data.frame 형식으로 보기 
+# 단계 1: data.frame 형식으로 보기 (테이블 형식(row, column))
 adult <- as(Adult, "data.frame")
 str(adult)
 head(adult)
 
-# 단계 2: 오약 통계량
+# 단계 2: 요약 통계량
 summary(Adult)
 
 
@@ -266,7 +284,7 @@ install.packages("arulesViz")
 library(arulesViz)
 
 # 단계 2: 연관규칙 시각화
-plot(ar3, method = "graph", control = list(type = "items"))
+plot(ar5, method = "graph", control = list(type = "items"), engine = "htmlwidget")
 
 
 # 실습: Groceries 데이터 셋으로 연관분석 하기 
@@ -299,7 +317,7 @@ inspect(rules)
 
 # 실습: 발견된 규칙 시각화 
 library(arulesViz)
-plot(rules, method = "graph")
+plot(rules, method = "graph", engine = "htmlwidget")
 
 
 
@@ -309,22 +327,23 @@ wmilk <- subset(rules, rhs %in% 'whole milk')
 wmilk
 
 inspect(wmilk)
-plot(wmilk, method = "graph")
+plot(wmilk, method = "graph", engine = "htmlwidget")
 
 # 단계 2: 오른쪽 item이 other vegetables인 규칙만 서브 셋으로 작성
 oveg <- subset(rules, rhs %in% 'other vegetables')
 oveg
 inspect(oveg)
-plot(oveg, method = "graph")
+plot(oveg, method = "graph", engine = "htmlwidget")
 
 
-# 단계 3: 오른쪽 item이 vegetables 단어가 포함된 규칙만 서브 셋으로 작성
-oveg <- subset(rules, rhs %in% 'vegetables')
-
+# 단계 3: 왼쪽 item이 yogurt 단어가 포함된 규칙만 서브 셋으로 작성
+oveg <- subset(rules, lhs %in% 'yogurt')
 oveg
 inspect(oveg)
+plot(oveg, method = "graph", engine = "htmlwidget")
 
 # 단계 4: 왼쪽 item이 butter 또는 yogurt인 규칙만 서브 셋으로 작성
 butter_yogurt <- subset(rules, lhs %in% c('butter', 'yogurt'))
 butter_yogurt
 inspect(butter_yogurt)
+plot(butter_yogurt, method = "graph", engine = "htmlwidget")
