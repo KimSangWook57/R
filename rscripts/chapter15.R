@@ -129,5 +129,5 @@ for(i in 1:length(cat_house$ocean_proximity)) {
 head(cat_house)
 
 # NEAR BAY = 우리가 말하는 해안만
-# NEAR OCEAN = 집 앞이 바다
+# NEAR OCEAN = 집 앞이 바닷물
 
