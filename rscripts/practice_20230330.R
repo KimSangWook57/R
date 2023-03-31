@@ -128,10 +128,11 @@ k_fold_cv_error$delta
 glm_cv_rmse = sqrt(k_fold_cv_error$delta)[1]
 glm_cv_rmse #off by about $83,000... it is a start
 
-# 
-names(glm_house) #what parts of the model are callable?
+#what parts of the model are callable? 
+names(glm_house) 
 glm_house$coefficients
 
+# 랜덤 포레스트를 써서 개선한다.
 names(train)
 set.seed(42)
 train_y = train[,'median_house_value']
@@ -139,9 +140,11 @@ train_x = train[, names(train) !='median_house_value']
 head(train_y)
 head(train_x)
 
+# ntree의 값은 내가 정한다. for 루프로 500부터 1500까지 루프를 돌려보는 것도 좋다.
 rf_model = randomForest(train_x, y = train_y , ntree = 500, importance = TRUE)
 names(rf_model) #these are all the different things you can call from the model.
 rf_model$importance
+
 
 oob_prediction = predict(rf_model) #leaving out a data source forces OOB predictions
 train_mse = mean(as.numeric((oob_prediction - train_y)^2))
@@ -150,6 +153,7 @@ oob_rmse
 
 test_y = test[,'median_house_value']
 test_x = test[, names(test) !='median_house_value']
+
 
 y_pred = predict(rf_model , test_x)
 test_mse = mean(((y_pred - test_y)^2))
